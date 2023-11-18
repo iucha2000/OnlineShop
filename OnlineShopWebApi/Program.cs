@@ -1,3 +1,7 @@
+using Application;
+using Infrastructure;
+using Infrastructure.Handlers;
+
 namespace OnlineShopWebApi
 {
     public class Program
@@ -8,12 +12,21 @@ namespace OnlineShopWebApi
 
             // Add services to the container.
 
+            //builder.Logging.ClearProviders();
+            //builder.Logging.AddConsole();
             builder.Services.AddControllers();
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            builder.Services
+                .AddApplicationLayer()
+                .AddInfrastructureLayer(builder.Configuration);
+
             var app = builder.Build();
+
+            app.UseMiddleware<ExceptionMiddleware>();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -24,8 +37,9 @@ namespace OnlineShopWebApi
 
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
+            app.UseAuthentication();
 
+            app.UseAuthorization();
 
             app.MapControllers();
 
