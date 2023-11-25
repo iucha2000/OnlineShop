@@ -1,6 +1,7 @@
 ﻿using Application.Common.Persistence;
 using Domain;
 using Domain.Entities;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,34 +11,35 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Persistence.Mocking
 {
-    internal class MockUserRepository<User> : IGenericRepository<User> where User : BaseEntity
+    internal class MockUserRepository: IGenericRepository<User>
     {
         private Dictionary<Guid, User> _dataBase;
 
         public MockUserRepository(MockDb dataBase)
         {
-            //_dataBase = 
+            _dataBase = dataBase.Users;
         }
 
         public async Task<Result> AddAsync(User entity)
         {
-            await Task.CompletedTask; 
-            _dataBase.Add(Guid.NewGuid(), entity);
+            await Task.CompletedTask;
+            entity.Id = Guid.NewGuid();
+            _dataBase.TryAdd(entity.Id, entity);
             return Result.Succeed();
         }
 
-        public Task AddRangeAsync(IEnumerable<User> entities)
+        public async Task AddRangeAsync(IEnumerable<User> entities)
         {
             foreach (var entity in entities)
             {
-                _dataBase.Add(Guid.NewGuid(), entity);
+                await AddAsync(entity);
             }
-            return Task.CompletedTask;
         }
 
-        public Task<Result> DeleteAsync(User entity)
+        public async Task<Result> DeleteAsync(User entity)
         {
-            throw new NotImplementedException();
+            var result = await DeleteByIdAsync(entity.Id);
+            return result;
         }
 
         public async Task<Result> DeleteByIdAsync(Guid Id)
@@ -50,24 +52,42 @@ namespace Infrastructure.Persistence.Mocking
             return Result.Fail("Not Found", 404);
         }
 
-        public Task<User> GetByExpressionAsync(Expression<Func<User, bool>> expression, string includes = null, bool trackChanges = false)
+        public async Task<User> GetByExpressionAsync(Expression<Func<User, bool>> expression, string includes = null, bool trackChanges = false)
         {
-            throw new NotImplementedException();
+            await Task.CompletedTask;
+            return _dataBase.Values.AsQueryable().Where(expression).FirstOrDefault();
         }
 
-        public Task<Result<User>> GetByIdAsync(Guid Id)
+        public async Task<Result<User>> GetByIdAsync(Guid Id)
         {
-            throw new NotImplementedException();
+            await Task.CompletedTask;
+            if (_dataBase.TryGetValue(Id, out var result))
+            {
+                return Result<User>.Succeed(result);
+            }
+            else
+            {
+                return Result<User>.Fail("Not Found", StatusCodes.Status404NotFound);
+            }
         }
 
-        public Task<IList<User>> ListAsync(Expression<Func<User, bool>> expression, string includes = null, bool trackChanges = false, Func<IQueryable<User>, IOrderedQueryable<User>> orderBy = null, int count = 0)
+        public async Task<IList<User>> ListAsync(Expression<Func<User, bool>> expression, string includes = null, bool trackChanges = false, Func<IQueryable<User>, IOrderedQueryable<User>> orderBy = null, int count = 0)
         {
-            throw new NotImplementedException();
+            await Task.CompletedTask;
+            return _dataBase.Values.AsQueryable().Where(expression).ToList();
         }
 
-        public Task<Result<User>> UpdateAsync(User entity)
+        public async Task<Result<User>> UpdateAsync(User entity)
         {
-            throw new NotImplementedException();
+            await Task.CompletedTask;
+            if (_dataBase.TryGetValue(entity.Id, out var result))
+            {
+                result.Email = entity.Email;
+                result.PasswordSalt = entity.PasswordSalt;
+                result.PasswordHash = entity.PasswordHash;
+            }
+
+            return Result<User>.Succeed(entity);
         }
     }
 }

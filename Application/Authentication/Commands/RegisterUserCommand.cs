@@ -43,6 +43,7 @@ namespace Application.Authentication.Commands
 
             var newUser = new User()
             {
+                Email = request.Email,
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt
             };

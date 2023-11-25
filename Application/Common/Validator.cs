@@ -24,7 +24,7 @@ namespace Application.Common
 
         public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
-            if(_validator != null)
+            if(_validator == null)
             {
                 return await next();
             }

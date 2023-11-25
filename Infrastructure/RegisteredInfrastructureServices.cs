@@ -1,4 +1,6 @@
-﻿using Application.Common.Handlers;
+﻿#define MOCKING
+
+using Application.Common.Handlers;
 using Infrastructure.Handlers;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -11,6 +13,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Configuration;
 using Application.Common.Persistence;
 using Infrastructure.Persistence;
+using Infrastructure.Persistence.Mocking;
+using Domain.Entities;
 
 
 namespace Infrastructure
@@ -53,9 +57,16 @@ namespace Infrastructure
 
         private static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
 
+#if MOCKING
+            services.AddSingleton<MockDb>();
+            services.AddScoped<IGenericRepository<User>, MockUserRepository>();
+            services.AddScoped<IGenericRepository<Product>, MockProductRepository>();
+            services.AddScoped<IUnitOfWork, MockUnitOfWork>();
+#else
+            services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+#endif
             return services;
         }
     }
