@@ -45,7 +45,8 @@ namespace Application.Authentication.Commands
             {
                 Email = request.Email,
                 PasswordHash = passwordHash,
-                PasswordSalt = passwordSalt
+                PasswordSalt = passwordSalt,
+                Orders = new List<Domain.Entities.Order>()
             };
 
             var user = await _userRepository.AddAsync(newUser);

@@ -49,9 +49,10 @@ namespace Infrastructure.Persistence.Mocking
             return Result.Fail("Not Found", 404);
         }
 
-        public Task<Order> GetByExpressionAsync(Expression<Func<Order, bool>> expression, string includes = null, bool trackChanges = false)
+        public async Task<Order> GetByExpressionAsync(Expression<Func<Order, bool>> expression, string includes = null, bool trackChanges = false)
         {
-            throw new NotImplementedException();
+            await Task.CompletedTask;
+            return _dataBase.Values.AsQueryable().Where(expression).FirstOrDefault();
         }
 
         public async Task<Result<Order>> GetByIdAsync(Guid Id)
@@ -67,14 +68,23 @@ namespace Infrastructure.Persistence.Mocking
             }
         }
 
-        public Task<IList<Order>> ListAsync(Expression<Func<Order, bool>> expression, string includes = null, bool trackChanges = false, Func<IQueryable<Order>, IOrderedQueryable<Order>> orderBy = null, int count = 0)
+        public async Task<IList<Order>> ListAsync(Expression<Func<Order, bool>> expression, string includes = null, bool trackChanges = false, Func<IQueryable<Order>, IOrderedQueryable<Order>> orderBy = null, int count = 0)
         {
-            throw new NotImplementedException();
+            await Task.CompletedTask;
+            return _dataBase.Values.AsQueryable().Where(expression).ToList();
         }
 
-        public Task<Result<Order>> UpdateAsync(Order entity)
+        public async Task<Result<Order>> UpdateAsync(Order entity)
         {
-            throw new NotImplementedException();
+            if(_dataBase.TryGetValue(entity.Id, out var oldValue))
+            {
+                oldValue.StartDate = oldValue.StartDate;
+                oldValue.EndDate = entity.EndDate;
+                oldValue.Products = entity.Products;
+                return Result<Order>.Succeed(entity);
+            }
+
+            return Result<Order>.Fail("Something went wrong");
         }
     }
 }

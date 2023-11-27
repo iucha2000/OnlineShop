@@ -12,6 +12,7 @@ namespace Domain.Entities
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
         public decimal Balance { get; set; }
+        public ICollection<Order> Orders { get; set; }
 
     }
 }

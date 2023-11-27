@@ -62,6 +62,7 @@ namespace Infrastructure
             services.AddSingleton<MockDb>();
             services.AddScoped<IGenericRepository<User>, MockUserRepository>();
             services.AddScoped<IGenericRepository<Product>, MockProductRepository>();
+            services.AddScoped<IGenericRepository<Order>, MockOrderRepository>();
             services.AddScoped<IUnitOfWork, MockUnitOfWork>();
 #else
             services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));

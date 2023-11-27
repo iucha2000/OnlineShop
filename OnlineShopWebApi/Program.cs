@@ -1,6 +1,7 @@
 using Application;
 using Infrastructure;
 using Infrastructure.Handlers;
+using OnlineShopWebApi.Extensions;
 
 namespace OnlineShopWebApi
 {
@@ -14,13 +15,9 @@ namespace OnlineShopWebApi
 
             //builder.Logging.ClearProviders();
             //builder.Logging.AddConsole();
-            builder.Services.AddControllers();
-
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
 
             builder.Services
+                .AddUI()
                 .AddApplicationLayer()
                 .AddInfrastructureLayer(builder.Configuration);
 
@@ -38,7 +35,6 @@ namespace OnlineShopWebApi
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
-
             app.UseAuthorization();
 
             app.MapControllers();

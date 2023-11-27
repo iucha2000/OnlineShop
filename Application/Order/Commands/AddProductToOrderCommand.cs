@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Application.Order.Commands
 {
-    public record AddProductToOrderCommand(Guid UserId, Guid ProductId, int Count): IRequest<Result<Domain.Entities.Order>>;
+    public record AddProductToOrderCommand(Guid UserId, int ProductId, int Count) : IRequest<Result<Domain.Entities.Order>>;
 
     internal class AddProductToOrderCommandHandler : IRequestHandler<AddProductToOrderCommand, Result<Domain.Entities.Order>>
     {
@@ -29,37 +29,48 @@ namespace Application.Order.Commands
 
         public async Task<Result<Domain.Entities.Order>> Handle(AddProductToOrderCommand request, CancellationToken cancellationToken)
         {
-            var user = await _userRepo.GetByIdAsync(request.UserId);
+            var userResult = await _userRepo.GetByIdAsync(request.UserId);
+            var user = userResult.Value;
             //TODO
             //check if user exists
 
-            var order = await _orderRepo.GetByExpressionAsync(x=> x.UserId == request.UserId, includes: "Products");
-            var product = await _productRepo.GetByIdAsync(request.ProductId);
+            var order = await _orderRepo.GetByExpressionAsync(x => x.UserId == request.UserId, includes: "Products");
+            var orderIsNew = order is null;
 
-            if(order is null)
+            var products = await _productRepo
+                .ListAsync(p => p.ProductId == request.ProductId 
+                && p.OrderId == null 
+                && p.IsSold == false, 
+                count: request.Count);
+
+            if (orderIsNew)
             {
                 order = new Domain.Entities.Order
                 {
+                    Id = Guid.NewGuid(),
                     UserId = request.UserId,
                 };
-                order.Products.Add(product.Value);
+            }
+
+            foreach (var product in products)
+            {
+                product.OrderId = order.Id;
+                order.Products.Add(product);
+            }
+
+            user.Orders.Add(order);
+            await _userRepo.UpdateAsync(user);
+
+            if(orderIsNew)
+            {
+                await _orderRepo.AddAsync(order);
             }
             else
             {
-                var existingProduct = order.Products.FirstOrDefault(x => x.Id == request.ProductId);
-
-                if(existingProduct != null)
-                {
-                    existingProduct.RemainingCount += request.Count;
-                }
-                else
-                {
-                    order.Products.Add(product.Value);
-                }
+                await _orderRepo.UpdateAsync(order);
             }
-
+            
             return Result<Domain.Entities.Order>.Succeed(order);
-
         }
     }
 }

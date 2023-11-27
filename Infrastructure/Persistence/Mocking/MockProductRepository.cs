@@ -74,7 +74,14 @@ namespace Infrastructure.Persistence.Mocking
         public async Task<IList<Product>> ListAsync(Expression<Func<Product, bool>> expression, string includes = null, bool trackChanges = false, Func<IQueryable<Product>, IOrderedQueryable<Product>> orderBy = null, int count = 0)
         {
             await Task.CompletedTask;
-            return _dataBase.Values.AsQueryable().Where(expression).ToList();
+            if(count > 0)
+            {
+                return _dataBase.Values.AsQueryable().Where(expression).Take(count).ToList();
+            }
+            else
+            {
+                return _dataBase.Values.AsQueryable().Where(expression).ToList();
+            }
         }
 
         public async Task<Result<Product>> UpdateAsync(Product entity)
@@ -85,7 +92,7 @@ namespace Infrastructure.Persistence.Mocking
                 result.Name = entity.Name;
                 result.Price = entity.Price;
                 result.Category = entity.Category;
-                result.RemainingCount = entity.RemainingCount;
+                result.ProductId = entity.ProductId;
             }
 
             return Result<Product>.Succeed(entity);

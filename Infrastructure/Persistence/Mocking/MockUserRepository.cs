@@ -85,6 +85,8 @@ namespace Infrastructure.Persistence.Mocking
                 result.Email = entity.Email;
                 result.PasswordSalt = entity.PasswordSalt;
                 result.PasswordHash = entity.PasswordHash;
+                result.Balance = entity.Balance;
+                result.Orders = entity.Orders;
             }
 
             return Result<User>.Succeed(entity);

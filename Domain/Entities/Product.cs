@@ -9,9 +9,11 @@ namespace Domain.Entities
 {
     public class Product : BaseEntity
     {
+        public int ProductId { get; set; }
         public string Name { get; set; }
         public decimal Price { get; set; }
         public ProductCategory Category { get; set; }
-        public int RemainingCount { get; set; }
+        public Guid? OrderId { get; set; }
+        public bool IsSold { get; set; }
     }
 }

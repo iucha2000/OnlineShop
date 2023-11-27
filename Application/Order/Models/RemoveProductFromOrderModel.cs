@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application.Order.Models
 {
-    public class AddProductToOrderModel
+    public class RemoveProductFromOrderModel
     {
         public int ProductId { get; set; }
         public int Quantity { get; set; }
