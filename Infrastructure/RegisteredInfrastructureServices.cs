@@ -15,6 +15,9 @@ using Application.Common.Persistence;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Mocking;
 using Domain.Entities;
+using Application.Services;
+using Infrastructure.Services;
+using Application.Services.Models;
 
 
 namespace Infrastructure
@@ -24,6 +27,14 @@ namespace Infrastructure
         public static IServiceCollection AddInfrastructureLayer(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddTransient<ExceptionMiddleware>();
+
+            services.AddMemoryCache();
+            services.AddSingleton<ICacheService, InMemoryCache>();
+            services.Configure<CachingOptions>(configuration.GetSection("MemoryCacheOptions"));
+
+            services.AddSingleton<IExchangeRate, ExchangeRate>();
+            services.Configure<ExchangeRatesConfigModel>(configuration.GetSection("ExchangeRateOptions"));
+
             services.AddAuthentication(configuration);
             services.AddPersistence(configuration);
 
