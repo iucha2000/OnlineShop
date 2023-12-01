@@ -19,7 +19,7 @@ namespace OnlineShopWebApi.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> Register(RegisterModel registerModel)
         {
-            var command = new RegisterUserCommand(registerModel.EmailAddress, registerModel.Password);
+            var command = new RegisterUserCommand(registerModel.EmailAddress, registerModel.Password, registerModel.AdminSecret);
 
             var result = await _mediator.Send(command);
 

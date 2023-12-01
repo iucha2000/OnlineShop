@@ -16,5 +16,7 @@ namespace Application.Authentication.Models
         [Required]
         [MinLength(8)]
         public string Password { get; set; }
+
+        public string AdminSecret { get; set; }
     }
 }

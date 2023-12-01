@@ -1,6 +1,7 @@
 ﻿using Application.Common.Persistence;
 using Domain;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,44 +13,89 @@ namespace Infrastructure.Persistence
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
-        public Task<Result> AddAsync(T entity)
+        private readonly DbSet<T> _dbSet;
+
+        public GenericRepository(ApplicationDbContext dbContext)
         {
-            throw new NotImplementedException();
+            _dbSet = dbContext.Set<T>();
         }
 
-        public Task AddRangeAsync(IEnumerable<T> entities)
+        public async Task<Result> AddAsync(T entity)
         {
-            throw new NotImplementedException();
+            var value = await _dbSet.AddAsync(entity);
+            return Result.Succeed();
         }
 
-        public Task<Result> DeleteAsync(T entity)
+        public async Task AddRangeAsync(IEnumerable<T> entities)
         {
-            throw new NotImplementedException();
+            await _dbSet.AddRangeAsync(entities);
         }
 
-        public Task<Result> DeleteByIdAsync(Guid Id)
+        public async Task<Result> DeleteAsync(T entity)
         {
-            throw new NotImplementedException();
+            var value = _dbSet.Remove(entity);
+            return Result.Succeed();
+           
         }
 
-        public Task<T> GetByExpressionAsync(Expression<Func<T, bool>> expression, string includes = null, bool trackChanges = false)
+        public async Task<Result> DeleteByIdAsync(Guid Id)
         {
-            throw new NotImplementedException();
+            var entity = await _dbSet.FindAsync(Id);
+            if(entity != null)
+            {
+                return await DeleteAsync(entity);
+            }
+            return Result.Fail("Not found", 404);
         }
 
-        public Task<Result<T>> GetByIdAsync(Guid Id)
+        public async Task<T> GetByExpressionAsync(Expression<Func<T, bool>> expression, string includes = null, bool trackChanges = false)
         {
-            throw new NotImplementedException();
+            IQueryable<T> query = _dbSet;
+
+            var includesList = includes?.Split(", ");
+            if (includesList != null)
+            {
+                query = includesList.Aggregate(query, (current, includesList) => current.Include(includesList));
+            }
+            var result = trackChanges ? await query.FirstOrDefaultAsync(expression) : await query.AsNoTracking().FirstOrDefaultAsync(expression);
+            return result;
         }
 
-        public Task<IList<T>> ListAsync(Expression<Func<T, bool>> expression, string includes = null, bool trackChanges = false, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, int count = 0)
+        public async Task<Result<T>> GetByIdAsync(Guid Id)
         {
-            throw new NotImplementedException();
+            var result = await _dbSet.FindAsync(Id);
+            return Result<T>.Succeed(result);
         }
 
-        public Task<Result<T>> UpdateAsync(T entity)
+        public async Task<IList<T>> ListAsync(Expression<Func<T, bool>> expression = null, string includes = null, bool trackChanges = false, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, int count = 0)
         {
-            throw new NotImplementedException();
+            IQueryable<T> query = _dbSet;
+
+            var includesList = includes?.Split(", ");
+            if(includesList != null)
+            {
+                query = includesList.Aggregate(query, (current,includesList) => current.Include(includesList));
+            }
+            if(expression != null)
+            {
+                query = query.Where(expression);
+            }
+            if(orderBy != null)
+            {
+                query = orderBy(query);
+            }
+            if(count > 0) 
+            {
+                query = query.Take(count);
+            }
+            var result = trackChanges ? await query.ToListAsync() : await query.AsNoTracking().ToListAsync();
+            return result;
+        }
+
+        public async Task<Result<T>> UpdateAsync(T entity)
+        {
+            var result = _dbSet.Update(entity);
+            return Result<T>.Succeed(entity);
         }
     }
 }

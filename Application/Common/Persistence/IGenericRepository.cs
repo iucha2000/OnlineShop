@@ -25,7 +25,7 @@ namespace Application.Common.Persistence
 
         Task<T> GetByExpressionAsync(Expression<Func<T, bool>> expression, string includes = null, bool trackChanges = false);
 
-        Task<IList<T>> ListAsync(Expression<Func<T, bool>> expression, string includes = null, bool trackChanges = false, 
+        Task<IList<T>> ListAsync(Expression<Func<T, bool>> expression = null, string includes = null, bool trackChanges = false, 
             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, int count = 0);
 
     }

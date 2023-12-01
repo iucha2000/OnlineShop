@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using Domain.Enums;
+using System.Security.Claims;
 
 namespace OnlineShopWebApi.Extensions
 {
@@ -7,10 +8,17 @@ namespace OnlineShopWebApi.Extensions
         public static Guid GetUserId(this HttpContext context)
         {
             var idAsString = context.User.Claims.ToList().FirstOrDefault(x=> x.Type == ClaimTypes.NameIdentifier)?.Value;
-            
+
             var id = string.IsNullOrEmpty(idAsString) ? Guid.Empty : Guid.Parse(idAsString);
 
             return id;
+        }
+
+        public static string GetRole(this HttpContext context)
+        {
+            var roleAsString = context.User.Claims.ToList().FirstOrDefault(x=> x.Type == ClaimTypes.Role)?.Value;
+
+            return roleAsString;
         }
     }
 }

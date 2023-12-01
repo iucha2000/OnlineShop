@@ -39,8 +39,8 @@ namespace Infrastructure.Services
                 {
                     options = new MemoryCacheEntryOptions()
                     {
-                        AbsoluteExpiration = DateTimeOffset.UtcNow.AddSeconds(_options.AbsoluteExpiration),
-                        SlidingExpiration = TimeSpan.FromSeconds(_options.SlidingExpiration),
+                        AbsoluteExpiration = DateTimeOffset.UtcNow.AddMinutes(_options.AbsoluteExpiration),
+                        SlidingExpiration = TimeSpan.FromMinutes(_options.SlidingExpiration),
                         Priority = CacheItemPriority.Normal,
                         Size = _options.Size,
                     };

@@ -1,4 +1,5 @@
 ﻿using Application.Common.Persistence;
+using Application.Services;
 using Domain;
 using MediatR;
 using System;
@@ -17,14 +18,16 @@ namespace Application.Order.Commands
         private readonly IGenericRepository<Domain.Entities.Product> _productRepo;
         private readonly IGenericRepository<Domain.Entities.User> _userRepo;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IExchangeRate _exchangeRate;
 
         public CheckoutOrderCommandHandler(IGenericRepository<Domain.Entities.Order> orderRepo, IGenericRepository<Domain.Entities.Product> productRepo,
-            IGenericRepository<Domain.Entities.User> userRepo, IUnitOfWork unitOfWork)
+            IGenericRepository<Domain.Entities.User> userRepo, IUnitOfWork unitOfWork, IExchangeRate exchangeRate)
         {
             _orderRepo = orderRepo;
             _productRepo = productRepo;
             _userRepo = userRepo;
             _unitOfWork = unitOfWork;
+            _exchangeRate = exchangeRate;
         }
 
         public async Task<Result<Domain.Entities.Order>> Handle(CheckoutOrderCommand request, CancellationToken cancellationToken)
@@ -37,13 +40,15 @@ namespace Application.Order.Commands
             //check if ongoing order exists
 
             var totalSum = ongoingOrder.Products.Sum(x => x.Price);
+            var rates = await _exchangeRate.GetExchangeRates(user.Currency);
+            var totalSumConverted = totalSum * rates.conversion_rates.USD;
 
-            if(user.Balance < totalSum)
+            if(user.Balance < totalSumConverted)
             {
                 return Result<Domain.Entities.Order>.Fail("No enough balance");
             }
 
-            user.Balance -= totalSum;
+            user.Balance -= totalSumConverted;
 
             ongoingOrder.Products.ToList().ForEach(x => x.IsSold = true);
             ongoingOrder.IsCompleted = true;

@@ -1,4 +1,4 @@
-﻿#define MOCKING
+﻿//#define MOCKING
 
 using Application.Common.Handlers;
 using Infrastructure.Handlers;
@@ -18,6 +18,7 @@ using Domain.Entities;
 using Application.Services;
 using Infrastructure.Services;
 using Application.Services.Models;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace Infrastructure
@@ -76,6 +77,12 @@ namespace Infrastructure
             services.AddScoped<IGenericRepository<Order>, MockOrderRepository>();
             services.AddScoped<IUnitOfWork, MockUnitOfWork>();
 #else
+            services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                options.UseSqlServer(configuration.GetConnectionString("DatabaseConnection"));
+            });
+
+            services.AddScoped<Func<ApplicationDbContext>>((provider) => provider.GetRequiredService<ApplicationDbContext>);
             services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 #endif

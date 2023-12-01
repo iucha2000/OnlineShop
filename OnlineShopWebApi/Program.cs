@@ -1,6 +1,7 @@
 using Application;
 using Infrastructure;
 using Infrastructure.Handlers;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 using OnlineShopWebApi.Extensions;
 
 namespace OnlineShopWebApi
