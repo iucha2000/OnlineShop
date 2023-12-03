@@ -1,7 +1,9 @@
 using Application;
 using Infrastructure;
 using Infrastructure.Handlers;
+using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
+using Microsoft.AspNetCore.Identity;
 using OnlineShopWebApi.Extensions;
 
 namespace OnlineShopWebApi
@@ -23,6 +25,13 @@ namespace OnlineShopWebApi
                 .AddInfrastructureLayer(builder.Configuration);
 
             var app = builder.Build();
+
+            using(var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var context = services.GetRequiredService<ApplicationDbContext>();
+                SeedData.SeedProducts(context);
+            }
 
             app.UseMiddleware<ExceptionMiddleware>();
 

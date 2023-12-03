@@ -45,12 +45,14 @@ namespace Application.Authentication.Commands
 
             _passwordHandler.CreateHashAndSalt(request.Password, out var passwordHash, out var passwordSalt);
 
+            var userRole = request.AdminSecret == _configuration.GetSection("AdminPanel:AdminSecret").Value ? Domain.Enums.Role.Admin : Domain.Enums.Role.User;
+
             var newUser = new User()
             {
                 Email = request.Email,
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
-                Role = request.AdminSecret == _configuration.GetSection("AdminPanel:AdminSecret").Value ? Domain.Enums.UserRole.Admin : Domain.Enums.UserRole.Client,
+                Role = userRole,
                 Orders = new List<Domain.Entities.Order>()
             };
 

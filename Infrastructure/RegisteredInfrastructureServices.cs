@@ -19,6 +19,7 @@ using Application.Services;
 using Infrastructure.Services;
 using Application.Services.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 
 namespace Infrastructure
@@ -50,7 +51,10 @@ namespace Infrastructure
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultForbidScheme = JwtBearerDefaults.AuthenticationScheme;
                 x.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+
             }).AddJwtBearer(x =>
             {
                 x.RequireHttpsMetadata = false;
@@ -63,7 +67,6 @@ namespace Infrastructure
                     ValidateAudience = false,
                 };
             });
-
             return services;
         }
 

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Domain.Enums
 {
-    public enum UserRole
+    public enum Role
     {
-        Client = 0,
+        User = 0,
         Admin = 1
     }
 }

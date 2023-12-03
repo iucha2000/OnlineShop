@@ -11,5 +11,6 @@ namespace Domain
         public const int Tablet = 0;
         public const int Sweater = 1;
         public const int Lamp = 2;
+        public const int Bread = 3;
     }
 }

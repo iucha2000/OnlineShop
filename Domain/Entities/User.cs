@@ -14,7 +14,7 @@ namespace Domain.Entities
         public byte[] PasswordSalt { get; set; }
         public decimal Balance { get; set; }
         public string Currency { get; set; } = "EUR";
-        public UserRole Role { get; set; } = UserRole.Client;
+        public Role Role { get; set; }
         public ICollection<Order> Orders { get; set; }
     }
 }

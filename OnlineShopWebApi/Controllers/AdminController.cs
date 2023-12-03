@@ -17,16 +17,11 @@ namespace OnlineShopWebApi.Controllers
         {
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPost("add-product")]
         public async Task<IActionResult> AddProduct(AddProductModel model)
         {
             await Task.CompletedTask;
-            if(HttpContext.GetRole() == UserRole.Client.ToString())
-            {
-                return BadRequest("User does not have admin permissions");
-            }
-
             var userId = HttpContext.GetUserId();
             var command = new AddProductCommand(model.Name, model.Price, model.ProductId, model.Category, model.Count);
             var result = await _mediator.Send(command);
@@ -34,15 +29,11 @@ namespace OnlineShopWebApi.Controllers
             return Ok(result);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPost("get-user-orders")]
         public async Task<IActionResult> GetUserOrders(Guid userId)
         {
             await Task.CompletedTask;
-            if (HttpContext.GetRole() == UserRole.Client.ToString())
-            {
-                return BadRequest("User does not have admin permissions");
-            }
             var query = new GetUserOrderQuery(userId);
             var result = await _mediator.Send(query);
 
