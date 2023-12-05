@@ -17,7 +17,7 @@ namespace Domain.Entities
         {
             Products = new List<Product>();
             StartDate = DateTime.Now;
-            EndDate = DateTime.Now;
+            IsCompleted = false;
         }
     }
 }

@@ -23,7 +23,7 @@ namespace Application.Product.Queries
 
         public async Task<Result<IEnumerable<Domain.Entities.Product>>> Handle(GetProductsByCategoryQuery request, CancellationToken cancellationToken)
         {
-            var products = await _repository.ListAsync(x => x.Category == request.Category);
+            var products = await _repository.ListAsync(x => x.Category == request.Category && x.IsSold == false);
             return Result<IEnumerable<Domain.Entities.Product>>.Succeed(products);
         }
     }

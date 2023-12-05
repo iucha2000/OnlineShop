@@ -30,14 +30,17 @@ namespace Application.Order.Commands
         public async Task<Result<Domain.Entities.Order>> Handle(RemoveProductFromOrderCommand request, CancellationToken cancellationToken)
         {
             var user = await _userRepo.GetByExpressionAsync(x => x.Id == request.UserId, includes: "Orders");
+
             var ongoingOrder = user.Orders.FirstOrDefault(o=> o.IsCompleted == false);
+
+            var orderFromDb = await _orderRepo.GetByExpressionAsync(x => x.Id == ongoingOrder.Id, includes: "Products");
 
             if (ongoingOrder == null)
             {
                 return Result<Domain.Entities.Order>.Fail("Ongoing order not found");
             }
 
-            var productsFromOrder = ongoingOrder.Products.Where(x => x.ProductId == request.ProductId);
+            var productsFromOrder = orderFromDb.Products.Where(x => x.ProductId == request.ProductId).ToList();
             if (productsFromOrder.Count() < request.Count)
             {
                 return Result<Domain.Entities.Order>.Fail("Not enough product in order");
@@ -50,6 +53,8 @@ namespace Application.Order.Commands
                 ongoingOrder.Products.Remove(productsToRemove[i]);
                 productsToRemove[i].OrderId = null;
             }
+
+            await _unitOfWork.CommitAsync();
 
             return Result<Domain.Entities.Order>.Succeed(ongoingOrder);
         }

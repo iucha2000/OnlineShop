@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +12,10 @@ namespace Infrastructure.Handlers
 {
     public sealed class ExceptionMiddleware : IMiddleware
     {
-        public ExceptionMiddleware()
+        private readonly ILogger _logger;
+        public ExceptionMiddleware(ILoggerFactory logger)
         {
+            _logger = logger.CreateLogger<ExceptionMiddleware>();
         }
 
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
@@ -24,6 +27,7 @@ namespace Infrastructure.Handlers
             catch (Exception ex)
             {
                 await HandleExceptionAsync(context, ex);
+                _logger.LogError($"Exception occured: {ex.Message}");
             }
         }
 

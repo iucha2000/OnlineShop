@@ -23,9 +23,9 @@ namespace Application.Common.Persistence
 
         Task<Result<T>> GetByIdAsync(Guid Id);
 
-        Task<T> GetByExpressionAsync(Expression<Func<T, bool>> expression, string includes = null, bool trackChanges = false);
+        Task<T> GetByExpressionAsync(Expression<Func<T, bool>> expression, string includes = null, bool trackChanges = true);
 
-        Task<IList<T>> ListAsync(Expression<Func<T, bool>> expression = null, string includes = null, bool trackChanges = false, 
+        Task<IList<T>> ListAsync(Expression<Func<T, bool>> expression = null, string includes = null, bool trackChanges = true, 
             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, int count = 0);
 
     }

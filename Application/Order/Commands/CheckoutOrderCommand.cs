@@ -36,8 +36,10 @@ namespace Application.Order.Commands
 
             var ongoingOrder = user.Orders.FirstOrDefault(x=> x.IsCompleted == false);
 
-            //TODO
-            //check if ongoing order exists
+            if(ongoingOrder == null)
+            {
+                return Result<Domain.Entities.Order>.Fail("There is no ongoing order");
+            }
 
             var orderFromDb = await _orderRepo.GetByExpressionAsync(x => x.Id == ongoingOrder.Id, includes: "Products");
 
@@ -54,6 +56,7 @@ namespace Application.Order.Commands
 
             orderFromDb.Products.ToList().ForEach(x => x.IsSold = true);
             orderFromDb.IsCompleted = true;
+            orderFromDb.EndDate = DateTime.Now;
 
             await _unitOfWork.CommitAsync();
 

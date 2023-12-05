@@ -8,7 +8,7 @@ namespace OnlineShopWebApi.Controllers
 {
     public class ProductController : BaseController
     {
-        public ProductController(/*ILogger logger,*/ ISender mediator) : base(/*logger,*/ mediator)
+        public ProductController(ILoggerFactory logger, ISender mediator) : base(logger, mediator)
         {
 
         }
@@ -18,7 +18,6 @@ namespace OnlineShopWebApi.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetAllProducts()
         {
-            await Task.CompletedTask;
             var query = new GetAllProductsQuery();
             var result = await _mediator.Send(query);
             return Ok(result);

@@ -8,7 +8,7 @@ namespace OnlineShopWebApi.Controllers
 {
     public class AuthenticationController : BaseController
     {
-        public AuthenticationController(/*ILogger logger,*/ ISender mediator) : base(/*logger,*/ mediator)
+        public AuthenticationController(ILoggerFactory logger, ISender mediator) : base(logger, mediator)
         {
 
         }

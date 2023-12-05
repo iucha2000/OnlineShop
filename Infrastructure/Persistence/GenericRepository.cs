@@ -48,7 +48,7 @@ namespace Infrastructure.Persistence
             return Result.Fail("Not found", 404);
         }
 
-        public async Task<T> GetByExpressionAsync(Expression<Func<T, bool>> expression, string includes = null, bool trackChanges = false)
+        public async Task<T> GetByExpressionAsync(Expression<Func<T, bool>> expression, string includes = null, bool trackChanges = true)
         {
             IQueryable<T> query = _dbSet;
 
@@ -67,7 +67,7 @@ namespace Infrastructure.Persistence
             return Result<T>.Succeed(result);
         }
 
-        public async Task<IList<T>> ListAsync(Expression<Func<T, bool>> expression = null, string includes = null, bool trackChanges = false, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, int count = 0)
+        public async Task<IList<T>> ListAsync(Expression<Func<T, bool>> expression = null, string includes = null, bool trackChanges = true, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, int count = 0)
         {
             IQueryable<T> query = _dbSet;
 

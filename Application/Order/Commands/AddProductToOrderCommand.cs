@@ -29,11 +29,10 @@ namespace Application.Order.Commands
 
         public async Task<Result<Domain.Entities.Order>> Handle(AddProductToOrderCommand request, CancellationToken cancellationToken)
         {
-            //var user = await _userRepo.GetByExpressionAsync(x=> x.Id == request.UserId, includes: "Orders");
             //TODO
             //check if user exists
 
-            var order = await _orderRepo.GetByExpressionAsync(x => x.UserId == request.UserId, includes: "Products");
+            var order = await _orderRepo.GetByExpressionAsync(x => x.UserId == request.UserId && x.IsCompleted == false, includes: "Products");
             var orderIsNew = order is null;
 
             var products = await _productRepo
@@ -46,7 +45,6 @@ namespace Application.Order.Commands
             {
                 order = new Domain.Entities.Order
                 {
-                    Id = Guid.NewGuid(),
                     UserId = request.UserId,
                 };
             }
@@ -56,9 +54,6 @@ namespace Application.Order.Commands
                 product.OrderId = order.Id;
                 order.Products.Add(product);
             }
-
-            //user.Orders.Add(order);
-            //await _userRepo.UpdateAsync(user);
 
             if(orderIsNew)
             {

@@ -9,7 +9,7 @@ namespace OnlineShopWebApi.Controllers
 {
     public class OrderController : BaseController
     {
-        public OrderController(/*ILogger logger,*/ ISender mediator) : base(/*logger,*/ mediator)
+        public OrderController(ILoggerFactory logger, ISender mediator) : base(logger, mediator)
         {
         }
 
