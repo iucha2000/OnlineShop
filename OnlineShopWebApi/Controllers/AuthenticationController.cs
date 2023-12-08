@@ -53,5 +53,22 @@ namespace OnlineShopWebApi.Controllers
             }
         }
 
+        [HttpGet("Verify")]
+        public async Task<IActionResult> Verify(string email, Guid verificationCode)
+        {
+            var command = new VerifyUserEmailCommand(email, verificationCode);
+
+            var result = await _mediator.Send(command);
+
+            if(result.Success)
+            {
+                return Ok();
+            }
+            else 
+            { 
+                return BadRequest(result.Message);
+            }
+        }
+
     }
 }

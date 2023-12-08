@@ -40,6 +40,8 @@ namespace Infrastructure
             services.AddAuthentication(configuration);
             services.AddPersistence(configuration);
 
+            services.AddEmailService(configuration);
+
             return services;
         }
 
@@ -86,9 +88,17 @@ namespace Infrastructure
             });
 
             services.AddScoped<Func<ApplicationDbContext>>((provider) => provider.GetRequiredService<ApplicationDbContext>);
-            services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 #endif
+            return services;
+        }
+
+        private static IServiceCollection AddEmailService(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddSingleton<IEmailSender,GmailSender>();
+            services.Configure<SMTPSettings>(configuration.GetSection("SmtpServer"));
+
             return services;
         }
     }

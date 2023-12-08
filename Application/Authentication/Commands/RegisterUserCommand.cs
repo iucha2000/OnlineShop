@@ -1,5 +1,6 @@
 ﻿using Application.Common.Handlers;
 using Application.Common.Persistence;
+using Application.Services;
 using Domain;
 using Domain.Entities;
 using MediatR;
@@ -24,15 +25,17 @@ namespace Application.Authentication.Commands
         private readonly ITokenHandler _tokenHandler;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IConfiguration _configuration;
+        private readonly IEmailSender _emailSender;
 
         public RegisterUserCommandHandler(IGenericRepository<User> userRepository, IPasswordHandler passwordHandler,
-            ITokenHandler tokenHandler, IUnitOfWork unitOfWork, IConfiguration configuration)
+            ITokenHandler tokenHandler, IUnitOfWork unitOfWork, IConfiguration configuration, IEmailSender emailSender)
         {
             _userRepository = userRepository;
             _passwordHandler = passwordHandler;
             _tokenHandler = tokenHandler;
             _unitOfWork = unitOfWork;
             _configuration = configuration;
+            _emailSender = emailSender;
         }
 
         public async Task<Result<string>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
@@ -53,8 +56,12 @@ namespace Application.Authentication.Commands
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
                 Role = userRole,
-                Orders = new List<Domain.Entities.Order>()
+                Orders = new List<Domain.Entities.Order>(),
+                EmailVerified = false
             };
+
+            newUser.VerificationCode = Guid.NewGuid();
+            await _emailSender.SendVerificationEmail(newUser.Email, newUser.VerificationCode);
 
             var user = await _userRepository.AddAsync(newUser);
             await _unitOfWork.CommitAsync();

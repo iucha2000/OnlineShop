@@ -16,5 +16,7 @@ namespace Domain.Entities
         public string Currency { get; set; } = "EUR";
         public Role Role { get; set; }
         public ICollection<Order> Orders { get; set; }
+        public Guid VerificationCode { get; set; }
+        public bool EmailVerified { get; set; }
     }
 }
