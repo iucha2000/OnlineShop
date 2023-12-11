@@ -1,6 +1,7 @@
 ﻿using Application.Common.Persistence;
 using Domain;
 using Domain.Entities;
+using Domain.Exceptions;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -29,8 +30,7 @@ namespace Application.Authentication.Commands
 
             if (user == null)
             {
-                //TODO
-                throw new ArgumentException();
+                throw new UserNotFoundException($"User with email: {request.email} does not exist", 404);
             }
 
             if(user.VerificationCode == request.verificationCode)
@@ -40,7 +40,7 @@ namespace Application.Authentication.Commands
                 return Result.Succeed();
             }
 
-            return Result.Fail("Verification code is incorrect", 500);
+            throw new InvalidTokenException("Verification code is invalid", 400);
         }
     }
 }

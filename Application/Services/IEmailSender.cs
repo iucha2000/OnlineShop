@@ -12,6 +12,6 @@ namespace Application.Services
 
         Task SendVerificationEmail(string email, Guid verificationCode);
 
-        Task SendPasswordChangeEmail(string email, Guid verificationCode);
+        Task SendPasswordResetEmail(string email, Guid verificationCode);
     }
 }

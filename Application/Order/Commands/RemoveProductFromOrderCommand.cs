@@ -1,6 +1,7 @@
 ﻿using Application.Common.Persistence;
 using Domain;
 using Domain.Entities;
+using Domain.Exceptions;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -37,7 +38,7 @@ namespace Application.Order.Commands
 
             if (ongoingOrder == null)
             {
-                return Result<Domain.Entities.Order>.Fail("Ongoing order not found");
+                throw new OrderNotFoundException("Ongoing order not found", request.UserId, 404);
             }
 
             var productsFromOrder = orderFromDb.Products.Where(x => x.ProductId == request.ProductId).ToList();

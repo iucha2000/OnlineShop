@@ -1,6 +1,7 @@
 ﻿using Application.Common.Persistence;
 using Application.Services;
 using Domain;
+using Domain.Exceptions;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -38,7 +39,7 @@ namespace Application.Order.Commands
 
             if(ongoingOrder == null)
             {
-                return Result<Domain.Entities.Order>.Fail("There is no ongoing order");
+                throw new OrderNotFoundException("Ongoing order not found", request.userId, 404);
             }
 
             var orderFromDb = await _orderRepo.GetByExpressionAsync(x => x.Id == ongoingOrder.Id, includes: "Products");

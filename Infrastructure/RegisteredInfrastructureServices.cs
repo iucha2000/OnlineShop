@@ -42,6 +42,8 @@ namespace Infrastructure
 
             services.AddEmailService(configuration);
 
+            services.AddImageUploader(configuration);
+
             return services;
         }
 
@@ -99,6 +101,13 @@ namespace Infrastructure
             services.AddSingleton<IEmailSender,GmailSender>();
             services.Configure<SMTPSettings>(configuration.GetSection("SmtpServer"));
 
+            return services;
+        }
+
+        private static IServiceCollection AddImageUploader(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddScoped<IImageService, ImageUploader>();
+            services.Configure<CloudinarySettings>(configuration.GetSection("ImageService"));
             return services;
         }
     }

@@ -48,9 +48,12 @@ namespace Infrastructure.Services
             await SendEmailAsync(email, "Please confirm your email", messageBody, true);
         }
 
-        public async Task SendPasswordChangeEmail(string email, Guid verificationCode)
+        public async Task SendPasswordResetEmail(string email, Guid verificationCode)
         {
-            throw new NotImplementedException();
+            string linkLocation = $"{_smtpSettings.PasswordResetAddress}?verificationCode={verificationCode}";
+            var messageBody = $"Please follow this link to reset your password <a href=\"{linkLocation}\">Reset Password</a>";
+
+            await SendEmailAsync(email, "Reset password", messageBody, true);
         }
     }
 }
