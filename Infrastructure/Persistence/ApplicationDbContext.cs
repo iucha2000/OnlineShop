@@ -18,5 +18,6 @@ namespace Infrastructure.Persistence
         DbSet<Order> Orders { get; set; }
         DbSet<User> Users { get; set; }
         DbSet<Product> Products { get; set; }
+        DbSet<Image> Images { get; set; }
     }
 }

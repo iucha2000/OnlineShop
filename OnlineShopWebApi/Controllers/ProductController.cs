@@ -3,6 +3,7 @@ using Domain.Entities;
 using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using OnlineShopWebApi.Extensions;
 
 namespace OnlineShopWebApi.Controllers
 {
@@ -18,18 +19,22 @@ namespace OnlineShopWebApi.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetAllProducts()
         {
-            var query = new GetAllProductsQuery();
+            var userId = HttpContext.GetUserId();
+
+            var query = new GetAllProductsQuery(userId);
             var result = await _mediator.Send(query);
             return Ok(result);
         }
 
 
-        [HttpGet("get-products-by-category/{category}")]
+        [HttpGet("get-product-by-product-id/{productId}")]
         [ProducesResponseType(typeof(IEnumerable<Product>), 200)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> GetProductsByCategory(ProductCategory category)
+        public async Task<IActionResult> GetProductsByProductId(int productId)
         {
-            var query = new GetProductsByCategoryQuery(category);
+            var userId = HttpContext.GetUserId();
+
+            var query = new GetProductsByProductIdQuery(productId, userId);
             var result = await _mediator.Send(query);
             return Ok(result);
         }

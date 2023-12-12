@@ -19,10 +19,9 @@ namespace OnlineShopWebApi.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost("add-product")]
-        public async Task<IActionResult> AddProduct(AddProductModel model)
+        public async Task<IActionResult> AddProduct([FromForm] AddProductModel model)
         {
-            var userId = HttpContext.GetUserId();
-            var command = new AddProductCommand(model.Name, model.Price, model.ProductId, model.Category, model.Count);
+            var command = new AddProductCommand(model.Name, model.Price, model.ProductId, model.Category, model.Image, model.Count);
             var result = await _mediator.Send(command);
 
             return Ok(result);

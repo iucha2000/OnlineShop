@@ -13,12 +13,5 @@ namespace OnlineShopWebApi.Extensions
 
             return id;
         }
-
-        public static string GetRole(this HttpContext context)
-        {
-            var roleAsString = context.User.Claims.ToList().FirstOrDefault(x=> x.Type == ClaimTypes.Role)?.Value;
-
-            return roleAsString;
-        }
     }
 }

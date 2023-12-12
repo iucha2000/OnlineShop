@@ -1,20 +1,18 @@
 ﻿using Domain.Enums;
-using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.AdminPanel.Models
+namespace Application.Product.Models
 {
-    public class AddProductModel
+    public class ProductModel
     {
         public int ProductId { get; set; }
         public string Name { get; set; }
         public decimal Price { get; set; }
         public ProductCategory Category { get; set; }
-        public IFormFile Image { get; set; }
-        public int Count { get; set; }
+        public string Url { get; set; }
     }
 }

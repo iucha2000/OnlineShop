@@ -46,7 +46,7 @@ namespace Application.Order.Commands
 
             var totalSum = orderFromDb.Products.Sum(x => x.Price);
             var rates = await _exchangeRate.GetExchangeRates(user.Currency);
-            var totalSumConverted = totalSum * rates.conversion_rates.USD;
+            var totalSumConverted = Math.Round(totalSum / rates.conversion_rates.USD, 2);
 
             if(user.Balance < totalSumConverted)
             {

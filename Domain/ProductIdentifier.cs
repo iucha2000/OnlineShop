@@ -12,5 +12,7 @@ namespace Domain
         public const int Sweater = 1;
         public const int Lamp = 2;
         public const int Bread = 3;
+        public const int Big_Lamp = 4;
+        public const int Small_Lamp = 5;
     }
 }

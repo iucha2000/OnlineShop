@@ -12,7 +12,7 @@ namespace OnlineShopWebApi.Controllers
         {
         }
 
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPost("upload-photo")]
         public async Task<IActionResult> UploadPhoto([FromForm] UploadImageModel model)
         {
