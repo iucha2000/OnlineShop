@@ -19,10 +19,10 @@ namespace Application.Product.Queries
     {
         private readonly IGenericRepository<Domain.Entities.Product> _productRepository;
         private readonly IGenericRepository<Image> _imageRepository;
-        private readonly IGenericRepository<User> _userRepository;
+        private readonly IGenericRepository<Domain.Entities.User> _userRepository;
         private readonly IExchangeRate _exchangeRate;
 
-        public GetProductByCategoryQueryHandler(IGenericRepository<Domain.Entities.Product> productRepository, IGenericRepository<Image> imageRepository, IGenericRepository<User> userRepository, IExchangeRate exchangeRate)
+        public GetProductByCategoryQueryHandler(IGenericRepository<Domain.Entities.Product> productRepository, IGenericRepository<Image> imageRepository, IGenericRepository<Domain.Entities.User> userRepository, IExchangeRate exchangeRate)
         {
             _productRepository = productRepository;
             _imageRepository = imageRepository;

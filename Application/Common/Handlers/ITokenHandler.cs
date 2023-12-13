@@ -9,6 +9,6 @@ namespace Application.Common.Handlers
 {
     public interface ITokenHandler
     {
-        string GenerateToken(User user);
+        string GenerateToken(Domain.Entities.User user);
     }
 }

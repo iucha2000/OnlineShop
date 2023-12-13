@@ -18,7 +18,7 @@ namespace Application.AdminPanel.Queries
         private readonly IGenericRepository<Domain.Entities.Order> _orderRepo;
         private readonly IGenericRepository<Domain.Entities.Product> _productRepo;
 
-        public GetUserInfoQueryHandler(IGenericRepository<User> userRepo, IGenericRepository<Domain.Entities.Order> orderRepo, IGenericRepository<Domain.Entities.Product> productRepo)
+        public GetUserInfoQueryHandler(IGenericRepository<Domain.Entities.User> userRepo, IGenericRepository<Domain.Entities.Order> orderRepo, IGenericRepository<Domain.Entities.Product> productRepo)
         {
             _userRepo = userRepo;
             _orderRepo = orderRepo;

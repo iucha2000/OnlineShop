@@ -34,6 +34,10 @@ namespace Application.Order.Commands
         public async Task<Result<Domain.Entities.Order>> Handle(CheckoutOrderCommand request, CancellationToken cancellationToken)
         {
             var user = await _userRepo.GetByExpressionAsync(x => x.Id == request.userId, includes: "Orders");
+            if(user.EmailVerified == false)
+            {
+                throw new EmailNotVerifiedException($"Email {user.Email} is not verified", 400);
+            }
 
             var ongoingOrder = user.Orders.FirstOrDefault(x=> x.IsCompleted == false);
 

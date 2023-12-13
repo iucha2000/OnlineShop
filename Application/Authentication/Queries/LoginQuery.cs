@@ -16,12 +16,12 @@ namespace Application.Authentication.Queries
 
     internal class LoginQueryHandler : IRequestHandler<LoginQuery, Result<string>>
     {
-        private readonly IGenericRepository<User> _userRepository;
+        private readonly IGenericRepository<Domain.Entities.User> _userRepository;
         private readonly IPasswordHandler _passwordHandler;
         private readonly ITokenHandler _tokenHandler;
         private readonly IUnitOfWork _unitOfWork;
 
-        public LoginQueryHandler(IGenericRepository<User> userRepository, IPasswordHandler passwordHandler,
+        public LoginQueryHandler(IGenericRepository<Domain.Entities.User> userRepository, IPasswordHandler passwordHandler,
             ITokenHandler tokenHandler, IUnitOfWork unitOfWork)
         {
             _userRepository = userRepository;

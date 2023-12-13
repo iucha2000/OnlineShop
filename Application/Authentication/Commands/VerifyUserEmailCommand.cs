@@ -15,10 +15,10 @@ namespace Application.Authentication.Commands
 
     internal class VerifyUserEmailCommandHandler : IRequestHandler<VerifyUserEmailCommand, Result>
     {
-        private readonly IGenericRepository<User> _userRepository;
+        private readonly IGenericRepository<Domain.Entities.User> _userRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public VerifyUserEmailCommandHandler(IGenericRepository<User> userRepository, IUnitOfWork unitOfWork)
+        public VerifyUserEmailCommandHandler(IGenericRepository<Domain.Entities.User> userRepository, IUnitOfWork unitOfWork)
         {
             _userRepository = userRepository;
             _unitOfWork = unitOfWork;

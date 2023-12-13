@@ -13,6 +13,7 @@ namespace Infrastructure.Handlers
     public sealed class ExceptionMiddleware : IMiddleware
     {
         private readonly ILogger _logger;
+
         public ExceptionMiddleware(ILoggerFactory logger)
         {
             _logger = logger.CreateLogger<ExceptionMiddleware>();

@@ -16,11 +16,11 @@ namespace Application.Authentication.Commands
 
     internal class ForgetPasswordCommandHandler : IRequestHandler<ForgetPasswordCommand, Result>
     {
-        private readonly IGenericRepository<User> _userRepository;
+        private readonly IGenericRepository<Domain.Entities.User> _userRepository;
         private readonly IEmailSender _emailSender;
         private readonly IUnitOfWork _unitOfWork;
 
-        public ForgetPasswordCommandHandler(IGenericRepository<User> userRepository, IEmailSender emailSender, IUnitOfWork unitOfWork)
+        public ForgetPasswordCommandHandler(IGenericRepository<Domain.Entities.User> userRepository, IEmailSender emailSender, IUnitOfWork unitOfWork)
         {
             _userRepository = userRepository;
             _emailSender = emailSender;

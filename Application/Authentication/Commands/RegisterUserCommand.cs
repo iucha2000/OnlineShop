@@ -20,14 +20,14 @@ namespace Application.Authentication.Commands
 
     internal class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, Result<string>>
     {
-        private readonly IGenericRepository<User> _userRepository;
+        private readonly IGenericRepository<Domain.Entities.User> _userRepository;
         private readonly IPasswordHandler _passwordHandler;
         private readonly ITokenHandler _tokenHandler;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IConfiguration _configuration;
         private readonly IEmailSender _emailSender;
 
-        public RegisterUserCommandHandler(IGenericRepository<User> userRepository, IPasswordHandler passwordHandler,
+        public RegisterUserCommandHandler(IGenericRepository<Domain.Entities.User> userRepository, IPasswordHandler passwordHandler,
             ITokenHandler tokenHandler, IUnitOfWork unitOfWork, IConfiguration configuration, IEmailSender emailSender)
         {
             _userRepository = userRepository;
@@ -50,7 +50,7 @@ namespace Application.Authentication.Commands
 
             var userRole = request.AdminSecret == _configuration.GetSection("AdminPanel:AdminSecret").Value ? Domain.Enums.Role.Admin : Domain.Enums.Role.User;
 
-            var newUser = new User()
+            var newUser = new Domain.Entities.User()
             {
                 Email = request.Email,
                 PasswordHash = passwordHash,

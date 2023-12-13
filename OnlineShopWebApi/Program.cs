@@ -5,6 +5,7 @@ using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using OnlineShopWebApi.Extensions;
+using Serilog;
 
 namespace OnlineShopWebApi
 {
@@ -13,10 +14,16 @@ namespace OnlineShopWebApi
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            var logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(builder.Configuration)
+                .Enrich.FromLogContext()
+                .Enrich.WithThreadId()
+                .CreateLogger();
 
             // Add services to the container.
             builder.Logging.ClearProviders();
             builder.Logging.AddConsole();
+            builder.Logging.AddSerilog(logger);
 
             builder.Services
                 .AddUI()

@@ -14,9 +14,9 @@ namespace Application.AdminPanel.Queries
 
     internal class GetUserOrderQueryHandler : IRequestHandler<GetUserOrderQuery, Result<IEnumerable<Domain.Entities.Order>>>
     {
-        private readonly IGenericRepository<User> _userRepository;
+        private readonly IGenericRepository<Domain.Entities.User> _userRepository;
 
-        public GetUserOrderQueryHandler(IGenericRepository<User> userRepository)
+        public GetUserOrderQueryHandler(IGenericRepository<Domain.Entities.User> userRepository)
         {
             _userRepository = userRepository;
         }

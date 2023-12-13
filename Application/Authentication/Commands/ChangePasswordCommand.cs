@@ -16,11 +16,11 @@ namespace Application.Authentication.Commands
 
     internal class ChangePasswordCommandHandler : IRequestHandler<ChangePasswordCommand, Result>
     {
-        private readonly IGenericRepository<User> _userRepository;
+        private readonly IGenericRepository<Domain.Entities.User> _userRepository;
         private readonly IPasswordHandler _passwordHandler;
         private readonly IUnitOfWork _unitOfWork;
 
-        public ChangePasswordCommandHandler(IGenericRepository<User> userRepository, IPasswordHandler passwordHandler, IUnitOfWork unitOfWork)
+        public ChangePasswordCommandHandler(IGenericRepository<Domain.Entities.User> userRepository, IPasswordHandler passwordHandler, IUnitOfWork unitOfWork)
         {
             _userRepository = userRepository;
             _passwordHandler = passwordHandler;

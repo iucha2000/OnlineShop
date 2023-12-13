@@ -17,11 +17,11 @@ namespace Application.Authentication.Commands
 
     internal class ResetPasswordCommandHandler : IRequestHandler<ResetPasswordCommand, Result>
     {
-        private readonly IGenericRepository<User> _userRepository;
+        private readonly IGenericRepository<Domain.Entities.User> _userRepository;
         private readonly IPasswordHandler _passwordHandler;
         private readonly IUnitOfWork _unitOfWork;
 
-        public ResetPasswordCommandHandler(IGenericRepository<User> userRepository, IUnitOfWork unitOfWork, IPasswordHandler passwordHandler)
+        public ResetPasswordCommandHandler(IGenericRepository<Domain.Entities.User> userRepository, IUnitOfWork unitOfWork, IPasswordHandler passwordHandler)
         {
             _userRepository = userRepository;
             _unitOfWork = unitOfWork;
