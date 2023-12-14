@@ -23,7 +23,6 @@
     <Folder Include="Images\Queries\" />
     <Folder Include="Order\Queries\" />
     <Folder Include="Product\Commands\" />
-    <Folder Include="User\Commands\" />
   </ItemGroup>
 
 </Project>

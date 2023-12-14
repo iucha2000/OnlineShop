@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Application.Order.Commands
 {
-    public record CheckoutOrderCommand (Guid userId): IRequest<Result<Domain.Entities.Order>>;
+    public record CheckoutOrderCommand (Guid userId, bool delivery, string? address): IRequest<Result<Domain.Entities.Order>>;
 
     internal class CheckoutOrderCommandHandler : IRequestHandler<CheckoutOrderCommand, Result<Domain.Entities.Order>>
     {
@@ -20,15 +20,17 @@ namespace Application.Order.Commands
         private readonly IGenericRepository<Domain.Entities.User> _userRepo;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IExchangeRate _exchangeRate;
+        private readonly IEmailSender _emailSender;
 
         public CheckoutOrderCommandHandler(IGenericRepository<Domain.Entities.Order> orderRepo, IGenericRepository<Domain.Entities.Product> productRepo,
-            IGenericRepository<Domain.Entities.User> userRepo, IUnitOfWork unitOfWork, IExchangeRate exchangeRate)
+            IGenericRepository<Domain.Entities.User> userRepo, IUnitOfWork unitOfWork, IExchangeRate exchangeRate, IEmailSender emailSender)
         {
             _orderRepo = orderRepo;
             _productRepo = productRepo;
             _userRepo = userRepo;
             _unitOfWork = unitOfWork;
             _exchangeRate = exchangeRate;
+            _emailSender = emailSender;
         }
 
         public async Task<Result<Domain.Entities.Order>> Handle(CheckoutOrderCommand request, CancellationToken cancellationToken)
@@ -62,6 +64,13 @@ namespace Application.Order.Commands
             orderFromDb.Products.ToList().ForEach(x => x.IsSold = true);
             orderFromDb.IsCompleted = true;
             orderFromDb.EndDate = DateTime.Now;
+            await _emailSender.SendEmailAsync(user.Email, "Order confirmed", $"Your order is confirmed and set up for delivery. \nOrder number: {orderFromDb.Id}");
+
+            if (request.delivery)
+            {
+                var deliveryAddress = string.IsNullOrWhiteSpace(request.address) ? user.Address : request.address;
+                await _emailSender.SendEmailAsync(user.Email, "Order information", $"Your order will be sent to address: {deliveryAddress}");
+            }
 
             await _unitOfWork.CommitAsync();
 

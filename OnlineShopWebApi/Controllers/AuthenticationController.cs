@@ -1,6 +1,7 @@
 ﻿using Application.Authentication.Commands;
 using Application.Authentication.Models;
 using Application.Authentication.Queries;
+using Domain.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

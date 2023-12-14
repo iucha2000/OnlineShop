@@ -34,29 +34,19 @@ namespace Infrastructure.Handlers
 
         public static async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
+            //TODO update exception handling
             var statusCode = 500;
             var response = new
             {
                 status = statusCode,
                 code = "System Error",
                 detail = exception.Message,
-                errors = GetErrors(exception)
+                errors = exception.Data.Values
             };
 
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = statusCode;
             await context.Response.WriteAsync(JsonSerializer.Serialize(response));
-        }
-
-        private static IEnumerable<string> GetErrors(Exception exception)
-        {
-            IEnumerable<string> errors = null;
-
-            if(exception is ValidationException validationException)
-            {
-                errors = validationException.Errors.Select(x => x.ErrorMessage);
-            }
-            return errors;
         }
     }
 }

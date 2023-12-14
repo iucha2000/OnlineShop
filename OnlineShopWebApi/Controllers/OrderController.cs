@@ -35,10 +35,10 @@ namespace OnlineShopWebApi.Controllers
 
         [Authorize]
         [HttpPost("checkout-order")]
-        public async Task<IActionResult> CheckoutOrder()
+        public async Task<IActionResult> CheckoutOrder(CheckoutOrderModel model)
         {
             var userId = HttpContext.GetUserId();
-            var command = new CheckoutOrderCommand(userId);
+            var command = new CheckoutOrderCommand(userId, model.Delivery, model.Address);
             var result = await _mediator.Send(command);
             return Ok(result);
         }

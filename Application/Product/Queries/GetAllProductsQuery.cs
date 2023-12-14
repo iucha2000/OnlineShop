@@ -14,7 +14,7 @@ namespace Application.Product.Queries
 {
     public record GetAllProductsQuery(Guid userId) : IRequest<Result<IEnumerable<ProductModel>>>;
 
-    internal class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQuery, Result<IEnumerable<ProductModel>>>
+    public class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQuery, Result<IEnumerable<ProductModel>>>
     {
         private readonly IGenericRepository<Domain.Entities.Product> _productRepository;
         private readonly IGenericRepository<Image> _imageRepository;
