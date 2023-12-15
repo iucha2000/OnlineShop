@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Comments\Queries\" />
     <Folder Include="Images\Queries\" />
     <Folder Include="Order\Queries\" />
     <Folder Include="Product\Commands\" />

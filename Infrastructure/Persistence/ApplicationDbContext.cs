@@ -19,5 +19,6 @@ namespace Infrastructure.Persistence
         DbSet<User> Users { get; set; }
         DbSet<Product> Products { get; set; }
         DbSet<Image> Images { get; set; }
+        DbSet<Comment> Comments { get; set; }
     }
 }
