@@ -22,8 +22,14 @@
   <ItemGroup>
     <Folder Include="Comments\Queries\" />
     <Folder Include="Images\Queries\" />
-    <Folder Include="Order\Queries\" />
-    <Folder Include="Product\Commands\" />
+    <Folder Include="Orders\Queries\" />
+    <Folder Include="Products\Commands\" />
   </ItemGroup>
+
+    <ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>OnlineShopTests</_Parameter1>
+		</AssemblyAttribute>
+    </ItemGroup>
 
 </Project>

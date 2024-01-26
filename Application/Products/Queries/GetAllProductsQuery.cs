@@ -3,6 +3,7 @@ using Application.Product.Models;
 using Application.Services;
 using Domain;
 using Domain.Entities;
+using Domain.Exceptions;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace Application.Product.Queries
 {
     public record GetAllProductsQuery(Guid userId) : IRequest<Result<IEnumerable<ProductModel>>>;
 
-    public class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQuery, Result<IEnumerable<ProductModel>>>
+    internal class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQuery, Result<IEnumerable<ProductModel>>>
     {
         private readonly IGenericRepository<Domain.Entities.Product> _productRepository;
         private readonly IGenericRepository<Image> _imageRepository;
@@ -50,6 +51,12 @@ namespace Application.Product.Queries
             if(request.userId != Guid.Empty)
             {
                 var userResult = await _userRepository.GetByIdAsync(request.userId);
+
+                if(userResult is null)
+                {
+                    throw new UserNotFoundException("User not found");
+                }
+
                 var rates = await _exchangeRate.GetExchangeRates(userResult.Value.Currency);
                 result.ForEach(x => Math.Round(x.Price /= rates.conversion_rates.USD, 2));
             }
