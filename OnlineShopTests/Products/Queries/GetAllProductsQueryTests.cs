@@ -82,48 +82,8 @@ namespace OnlineShopTests.Product.Queries
             var result = await handler.Handle(query, default);
 
             //Assert
-            Assert.True(true);
-            Assert.Single(result.Value);
-
-        }
-
-
-        [Fact]
-        public async Task GetAllProductsQuery_Should_Return_Empty_List()
-        {
-            //Arrange
-            _productMockRepository.Setup(x => x.ListAsync(null, null, false, null, 0))
-                .ReturnsAsync(new List<Domain.Entities.Product>());
-
-            var query = new GetAllProductsQuery(Guid.Empty);
-
-            var handler = new GetAllProductsQueryHandler(_productMockRepository.Object, _imageMockRepository.Object,
-                _userMockRepository.Object, _exchangeRateMock.Object);
-
-            //Act
-            var result = await handler.Handle(query, default);
-
-            //Assert
             Assert.True(result.Success);
-            Assert.Empty(result.Value);
-        }
-
-
-        [Fact]
-        public async Task GetAllProductsQuery_Should_Throw_UserNotFoundException()
-        {
-            //Arrange
-            _productMockRepository.Setup(x => x.ListAsync(null, null, false, null, 0))
-                .ReturnsAsync(new List<Domain.Entities.Product>());
-
-            var query = new GetAllProductsQuery(_userId);
-
-            var handler = new GetAllProductsQueryHandler(_productMockRepository.Object, _imageMockRepository.Object,
-                _userMockRepository.Object, _exchangeRateMock.Object);
-
-            //Act
-            //Assert
-            await Assert.ThrowsAsync<UserNotFoundException>(async () => await handler.Handle(query, default));
+            Assert.Single(result.Value);
 
         }
 
@@ -182,5 +142,45 @@ namespace OnlineShopTests.Product.Queries
             Assert.Equal(2, result.Value.Count());
 
         }
+
+        [Fact]
+        public async Task GetAllProductsQuery_Should_Return_Empty_List()
+        {
+            //Arrange
+            _productMockRepository.Setup(x => x.ListAsync(null, null, false, null, 0))
+                .ReturnsAsync(new List<Domain.Entities.Product>());
+
+            var query = new GetAllProductsQuery(Guid.Empty);
+
+            var handler = new GetAllProductsQueryHandler(_productMockRepository.Object, _imageMockRepository.Object,
+                _userMockRepository.Object, _exchangeRateMock.Object);
+
+            //Act
+            var result = await handler.Handle(query, default);
+
+            //Assert
+            Assert.True(result.Success);
+            Assert.Empty(result.Value);
+        }
+
+
+        [Fact]
+        public async Task GetAllProductsQuery_Should_Throw_UserNotFoundException()
+        {
+            //Arrange
+            _productMockRepository.Setup(x => x.ListAsync(null, null, false, null, 0))
+                .ReturnsAsync(new List<Domain.Entities.Product>());
+
+            var query = new GetAllProductsQuery(_userId);
+
+            var handler = new GetAllProductsQueryHandler(_productMockRepository.Object, _imageMockRepository.Object,
+                _userMockRepository.Object, _exchangeRateMock.Object);
+
+            //Act
+            //Assert
+            await Assert.ThrowsAsync<UserNotFoundException>(async () => await handler.Handle(query, default));
+
+        }
+
     }
 }
