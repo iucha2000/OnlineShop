@@ -7,6 +7,7 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,7 +15,6 @@ namespace OnlineShopTests.Product.Queries
 {
     public class GetAllProductsQueryTests
     {
-        private readonly Guid _userId;
 
         private readonly Mock<IGenericRepository<Domain.Entities.Product>> _productMockRepository;
         private readonly Mock<IGenericRepository<Domain.Entities.Image>> _imageMockRepository;
@@ -23,18 +23,19 @@ namespace OnlineShopTests.Product.Queries
 
         public GetAllProductsQueryTests()
         {
-            _userId = Guid.NewGuid();
             _productMockRepository = new();
             _imageMockRepository = new();
             _userMockRepository = new();
             _exchangeRateMock = new();
         }
 
-
         [Fact]
         public async Task GetAllProductsQuery_Should_Return_One_Product()
         {
             //Arrange
+            int count = 1;
+            var userId = Guid.NewGuid();
+
             var products = new List<Domain.Entities.Product>()
             {
                 new Domain.Entities.Product()
@@ -43,25 +44,24 @@ namespace OnlineShopTests.Product.Queries
                     Name = "Product 1",
                     Price = 14.99m,
                     Category = Domain.Enums.ProductCategory.Fashion,
-                    OrderId = null,
                     IsSold = false,
                 },
 
                 new Domain.Entities.Product()
                 {
-                    ProductId = 1,
+                    ProductId = 2,
                     Name = "Product 2",
-                    Price = 14.99m,
+                    Price = 24.99m,
                     Category = Domain.Enums.ProductCategory.Fashion,
-                    OrderId = null,
                     IsSold = false,
                 }
             };
 
-            var query = new GetAllProductsQuery(_userId);
+            var query = new GetAllProductsQuery(userId);
 
-            _productMockRepository.Setup(x => x.ListAsync(null, null, false, null, 0))
-              .ReturnsAsync(products);
+            _productMockRepository.Setup(x => x.ListAsync(
+                It.IsAny<Expression<Func<Domain.Entities.Product, bool>>>(), It.IsAny<string>(), It.IsAny<bool>(), null, count))
+                .ReturnsAsync(products);
 
             _exchangeRateMock.Setup(x => x.GetExchangeRates("USD"))
                 .ReturnsAsync(new Application.Services.Models.ExchangeRatesModel()
@@ -69,10 +69,10 @@ namespace OnlineShopTests.Product.Queries
                     conversion_rates = new Application.Services.Models.Conversion_Rates()
                 });
 
-            _userMockRepository.Setup(x => x.GetByIdAsync(_userId))
+            _userMockRepository.Setup(x => x.GetByIdAsync(userId))
                 .ReturnsAsync(new Domain.Result<User>
                 {
-                    Value = new User() { Currency = "USD" }
+                    Value = new User() { Id = userId, Currency = "USD" }
                 });
 
             var handler = new GetAllProductsQueryHandler(_productMockRepository.Object, _imageMockRepository.Object,
@@ -91,6 +91,9 @@ namespace OnlineShopTests.Product.Queries
         public async Task GetAllProductsQuery_Should_Return_Two_Products()
         {
             //Arrange
+            int count = 2;
+            var userId = Guid.NewGuid();
+
             var products = new List<Domain.Entities.Product>()
             {
                 new Domain.Entities.Product()
@@ -114,10 +117,11 @@ namespace OnlineShopTests.Product.Queries
                 }
             };
 
-            var query = new GetAllProductsQuery(_userId);
+            var query = new GetAllProductsQuery(userId);
 
-            _productMockRepository.Setup(x => x.ListAsync(null, null, false, null, 1))
-              .ReturnsAsync(products);
+            _productMockRepository.Setup(x => x.ListAsync(
+                It.IsAny<Expression<Func<Domain.Entities.Product, bool>>>(), It.IsAny<string>(), It.IsAny<bool>(), null, count))
+                .ReturnsAsync(products);
 
             _exchangeRateMock.Setup(x => x.GetExchangeRates("USD"))
                 .ReturnsAsync(new Application.Services.Models.ExchangeRatesModel()
@@ -125,7 +129,7 @@ namespace OnlineShopTests.Product.Queries
                     conversion_rates = new Application.Services.Models.Conversion_Rates()
                 });
 
-            _userMockRepository.Setup(x => x.GetByIdAsync(_userId))
+            _userMockRepository.Setup(x => x.GetByIdAsync(userId))
                 .ReturnsAsync(new Domain.Result<User>
                 {
                     Value = new User() { Currency = "USD" }
@@ -163,15 +167,16 @@ namespace OnlineShopTests.Product.Queries
             Assert.Empty(result.Value);
         }
 
-
         [Fact]
         public async Task GetAllProductsQuery_Should_Throw_UserNotFoundException()
         {
             //Arrange
+            var userId = Guid.NewGuid();
+
             _productMockRepository.Setup(x => x.ListAsync(null, null, false, null, 0))
                 .ReturnsAsync(new List<Domain.Entities.Product>());
 
-            var query = new GetAllProductsQuery(_userId);
+            var query = new GetAllProductsQuery(userId);
 
             var handler = new GetAllProductsQueryHandler(_productMockRepository.Object, _imageMockRepository.Object,
                 _userMockRepository.Object, _exchangeRateMock.Object);

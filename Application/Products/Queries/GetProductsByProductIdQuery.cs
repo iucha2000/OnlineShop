@@ -5,6 +5,7 @@ using Application.Services;
 using Domain;
 using Domain.Entities;
 using Domain.Enums;
+using Domain.Exceptions;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -36,6 +37,11 @@ namespace Application.Product.Queries
         public async Task<Result<ProductModel>> Handle(GetProductsByProductIdQuery request, CancellationToken cancellationToken)
         {
             var product = await _productRepository.GetByExpressionAsync(x => x.ProductId == request.ProductId && x.IsSold == false, trackChanges: false);
+
+            if(product is null)
+            {
+                throw new ProductNotFoundException("Product not found", 404);
+            }
 
             var image = await _imageRepository.GetByExpressionAsync(x => x.ProductId == product.ProductId, trackChanges: false);
 

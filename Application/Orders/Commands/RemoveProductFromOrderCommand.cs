@@ -32,14 +32,19 @@ namespace Application.Order.Commands
         {
             var user = await _userRepo.GetByExpressionAsync(x => x.Id == request.UserId, includes: "Orders");
 
-            var ongoingOrder = user.Orders.FirstOrDefault(o=> o.IsCompleted == false);
+            if(user is null)
+            {
+                throw new UserNotFoundException("User not found", 404);
+            }
 
-            var orderFromDb = await _orderRepo.GetByExpressionAsync(x => x.Id == ongoingOrder.Id, includes: "Products");
+            var ongoingOrder = user.Orders.FirstOrDefault(o=> o.IsCompleted == false);
 
             if (ongoingOrder == null)
             {
                 throw new OrderNotFoundException("Ongoing order not found", request.UserId, 404);
             }
+
+            var orderFromDb = await _orderRepo.GetByExpressionAsync(x => x.Id == ongoingOrder.Id, includes: "Products");
 
             var productsFromOrder = orderFromDb.Products.Where(x => x.ProductId == request.ProductId).ToList();
             if (productsFromOrder.Count() < request.Count)
