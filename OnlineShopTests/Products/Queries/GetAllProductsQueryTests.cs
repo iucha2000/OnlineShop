@@ -139,7 +139,7 @@ namespace OnlineShopTests.Product.Queries
                 _userMockRepository.Object, _exchangeRateMock.Object);
 
             //Act
-            var result = await handler.Handle(query, CancellationToken.None);
+            var result = await handler.Handle(query, default);
 
             //Assert
             Assert.True(true);

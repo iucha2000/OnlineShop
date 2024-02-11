@@ -25,7 +25,17 @@ namespace Application.Comments.Commands
 
         public async Task<Result> Handle(DeleteCommentCommand request, CancellationToken cancellationToken)
         {
+            if(request.userId == Guid.Empty)
+            {
+                throw new UnauthorizedAccessException();
+            }
+
             var comment = _commentRepository.GetByIdAsync(request.commentId).Result.Value;
+            if(comment is null)
+            {
+                return Result.Fail("Comment not found", 404);
+            }
+
             if(comment.UserId != request.userId)
             {
                 throw new UnauthorizedAccessException();

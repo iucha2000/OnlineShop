@@ -28,6 +28,11 @@ namespace Application.Comments.Commands
 
         public async Task<Result> Handle(AddCommentToProductCommand request, CancellationToken cancellationToken)
         {
+            if(string.IsNullOrWhiteSpace(request.message) && request.rating == null)
+            {
+                return Result.Fail("Incorrect comment parameters", 400);
+            }
+
             var product = await _productRepository.GetByExpressionAsync(x => x.ProductId == request.productId);
             if (product == null)
             {
